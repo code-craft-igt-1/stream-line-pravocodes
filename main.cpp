@@ -3,20 +3,31 @@
 #include <iomanip> 
 #include <sstream> 
 
-std::string generateSensorData() {
-    static std::mt19937 generator(std::random_device{}());
-    std::uniform_real_distribution<double> tempDist(95.0, 105.0); 
-    std::uniform_int_distribution<int> pulseDist(60, 100); 
-    std::uniform_int_distribution<int> spo2Dist(90, 100); 
+void initializeRandom() {
+    std::srand(static_cast<unsigned int>(std::time(0)));
+}
 
-    double temperature = tempDist(generator);
-    int pulseRate = pulseDist(generator);
-    int spo2 = spo2Dist(generator);
+double generateTemperature() {
+    return 95.0 + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (105.0 - 95.0)));
+}
+
+int generatePulseRate() {
+    return rand() % (100 - 60 + 1) + 60;
+}
+
+int generateSpO2() {
+    return rand() % (100 - 90 + 1) + 90; 
+}
+
+std::string generateSensorData() {
+    initializeRandom();
+    double temperature = generateTemperature();
+    int pulseRate = generatePulseRate() ;
+    int spo2 = generateSpO2();
 
     std::ostringstream dataStream;
     dataStream << std::fixed << std::setprecision(1) << temperature << "," 
                << pulseRate << "," << spo2;
-
     return dataStream.str();
 }
 
